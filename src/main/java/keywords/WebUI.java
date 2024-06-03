@@ -8,7 +8,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 import utils.LogUtils;
 
 import java.time.Duration;
@@ -31,8 +30,21 @@ public class WebUI {
 
     @Step("Open URL: {0}")
     public static void openURL(String URL){
-        getDriver().get(URL);
+        DriverManager.getDriver().get(URL);
+        waiForPageLoad();
         LogUtils.info("Open URL: " + URL);
+    }
+
+    @Step("Get current URL")
+    public static String getURLPage(){
+        LogUtils.info("Current URL: " + getDriver().getCurrentUrl());
+        return getDriver().getCurrentUrl();
+    }
+
+    @Step("Get title page")
+    public static String getTitlePage(){
+        LogUtils.info("Title page: " + getDriver().getTitle());
+        return getDriver().getTitle();
     }
 
     @Step("Click Element: {0}")
@@ -84,6 +96,20 @@ public class WebUI {
     @Step("Get attribute {1} of element {0}")
     public static String getAttributeElement(By by, String atb){
         return getWebElement(by).getAttribute(atb);
+    }
+
+    @Step("Clear placeholder on Element: {0}")
+    public static void clearTextElement(By by){
+        getWebElement(by).clear();
+        LogUtils.info("Clear placeholder on element: " + by );
+    }
+
+    @Step("Clear placeholder on Element: {0} - set text {1}")
+    public static void clearAndSetTextElement(By by, String text) {
+        waitForElementVisible(by);
+        getWebElement(by).clear();
+        getWebElement(by).sendKeys(text);
+        LogUtils.info("Clear placeholder and Set text on Element: " + by + " - Text: " + text);
     }
 
 

@@ -15,6 +15,7 @@ public class ConfigData {
     public static int TIMEOUT = Integer.parseInt(PropertiesHelper.getValue("TIMEOUT"));
     public static int STEP_TIME = Integer.parseInt(PropertiesHelper.getValue("STEP_TIME"));
     public static int PAGE_LOAD_TIMEOUT = Integer.parseInt(PropertiesHelper.getValue("PAGE_LOAD_TIMEOUT"));
+    public static String EXTENT_REPORT = PropertiesHelper.getValue("EXTENT_REPORT");
 
     public static String SCREENSHOT = PropertiesHelper.getValue("SCREENSHOT");
     public static String SCREENSHOT_PATH = PropertiesHelper.getValue("SCREENSHOT_PATH");

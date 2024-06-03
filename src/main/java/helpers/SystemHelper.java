@@ -4,7 +4,7 @@ import java.io.File;
 
 public class SystemHelper {
     public static String getCurrentDir(){
-        String path = System.getProperty("user.dir") + File.pathSeparator;
-        return path;
+        String current = System.getProperty("user.dir") + File.separator;
+        return current;
     }
 }
