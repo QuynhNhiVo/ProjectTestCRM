@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.asserts.SoftAssert;
 import utils.LogUtils;
 
 import java.time.Duration;
@@ -122,8 +123,8 @@ public class WebUI {
             LogUtils.info("Verify element visible: " + by);
             return true;
         } catch (Exception e) {
-            LogUtils.error(ConfigData.TIMEOUT + "(s) Element is Not visible. " + e.getMessage());
-            Assert.fail(ConfigData.TIMEOUT + "(s) Element is Not visible. " + e.getMessage());
+            LogUtils.error(e.getMessage());
+            Assert.fail(e.getMessage());
             return false;
         }
     }
@@ -136,8 +137,8 @@ public class WebUI {
             LogUtils.info("Verify element visible: " + by);
             return true;
         } catch (Exception e) {
-            LogUtils.error(timeout + "(s) Element is Not visible. " + e.getMessage());
-            Assert.fail(timeout + "(s) Element is Not visible. " + e.getMessage());
+            LogUtils.error(e.getMessage());
+            Assert.fail(e.getMessage());
             return false;
         }
     }
@@ -373,9 +374,9 @@ public class WebUI {
     public static boolean verifyContain(String value1, String value2) {
         boolean check = value1.contains(value2);
         if (check) {
-            LogUtils.info("Verify Equal -" + value1 + "- And -" + value2);
+            LogUtils.info("Verify contains -" + value1 + "- And -" + value2);
         } else {
-            LogUtils.error("Verify Equal -" + value1 + "- And -" + value2);
+            LogUtils.error("Verify contains -" + value1 + "- And -" + value2);
             Assert.assertTrue(check);
         }
         return check;
@@ -391,6 +392,28 @@ public class WebUI {
             Assert.assertTrue(check, message);
         }
         return check;
+    }
+
+    public static boolean checkElementIsSelected(By by){
+        waitForElementVisible(by);
+        if(getWebElement(by).isSelected()){
+            LogUtils.info("Element has selected: " + by);
+            return true;
+        }else {
+            Assert.assertTrue(false, "Element not selected");
+            return false;
+        }
+    }
+
+    public static boolean checkElementIsSelectedAndClick(By by){
+        if(getWebElement(by).isSelected()){
+            LogUtils.info("Element has selected: " + by);
+            return true;
+        }else {
+            LogUtils.info("Element not selected");
+            clickElement(by);
+            return false;
+        }
     }
 
 

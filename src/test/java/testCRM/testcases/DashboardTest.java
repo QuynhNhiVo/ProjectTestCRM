@@ -16,4 +16,25 @@ public class DashboardTest extends BaseTest {
         dashboardPage = loginPage.loginCRM();
         dashboardPage.logout();
     }
+
+    @Test
+    public void TC_ComponentInDashboard(){
+        loginPage = new LoginPage();
+        dashboardPage = loginPage.loginCRM();
+        dashboardPage.verifyOptionsQuickStatistics();
+    }
+
+    @Test
+    public void TC_NavigateToCustomers(){
+        loginPage = new LoginPage();
+        dashboardPage = loginPage.loginCRM();
+        dashboardPage.goCustomersPage();
+    }
+
+    @Test
+    public void TC_NavigateToProjects(){
+        loginPage = new LoginPage();
+        dashboardPage = loginPage.loginCRM();
+        dashboardPage.goProjectsPage();
+    }
 }
