@@ -2,6 +2,9 @@ package testCRM.pages;
 
 import org.openqa.selenium.By;
 
+import static keywords.WebUI.getURLPage;
+import static keywords.WebUI.verifyContain;
+
 public class ProjectsPage {
     private String subdirProjects = "/admin/projects";
     private String totalResult = "//div[@id='projects_info']";
@@ -16,4 +19,11 @@ public class ProjectsPage {
     private By checkboxProgress = By.xpath("//input[@id='progress_from_tasks']");
     private By progressBar = By.xpath("//span[@class='ui-slider-handle ui-corner-all ui-state-default']");
     private By buttonSave = By.xpath("//input[@id='start_date']");
+
+
+
+    public ProjectsPage verifyProjectsPage(){
+        verifyContain(getURLPage(), subdirProjects, "URL not True");
+        return new ProjectsPage();
+    }
 }

@@ -4,7 +4,7 @@ import contants.ConfigData;
 import org.openqa.selenium.By;
 import static keywords.WebUI.*;
 
-public class LoginPage {
+public class LoginPage extends CommonPage{
 
     private String subdirLogin = "/admin/authentication";
     private String subdirDashboard = "/admin/";
@@ -36,6 +36,11 @@ public class LoginPage {
 
     private void sendPassword(String password){
         setText(inputPassword, password);
+    }
+
+    public LoginPage verifyLogout(){
+        verifyContain(getURLPage(), subdirLogin, "Logout Failed. Can not redirect to Login page.");
+        return new LoginPage();
     }
 
     public DashboardPage loginCRM(){

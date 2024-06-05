@@ -3,6 +3,7 @@ package helpers;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import utils.LogUtils;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,13 +30,13 @@ public class ExcelHelper {
         LogUtils.info("Set :" + SheetName + " - From path: " + ExcelPath);
         try {
             File f = new File(ExcelPath);
-            fis = new FileInputStream(ExcelPath);
-            wb = WorkbookFactory.create(fis);
-            sh = wb.getSheet(SheetName);
             if (!f.exists()) {
                 LogUtils.error("File doesn't exist.");
                 System.out.println("File doesn't exist.");
             }
+            fis = new FileInputStream(ExcelPath);
+            wb = WorkbookFactory.create(fis);
+            sh = wb.getSheet(SheetName);
             if (sh == null) {
                 LogUtils.error("Sheet name doesn't exist.");
                 throw new Exception("Sheet name doesn't exist.");
@@ -113,9 +114,6 @@ public class ExcelHelper {
                 case BOOLEAN:
                     CellData = Boolean.toString(cell.getBooleanCellValue());
                     break;
-                case FORMULA:
-                    CellData = cell.getStringCellValue();
-                    break;
                 case BLANK:
                     CellData = "";
                     break;
@@ -124,6 +122,10 @@ public class ExcelHelper {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public String getCellData(String columnName, int rowIndex) {
+        return getCellData(columns.get(columnName), rowIndex);
     }
 
     public void setCellData(String text, int columnIndex, int rowIndex) {
@@ -159,6 +161,37 @@ public class ExcelHelper {
             fileOut.close();
         } catch (Exception e) {
             LogUtils.error(e.getMessage());
+            e.getMessage();
+        }
+    }
+
+    public void setCellData(String text, String columnName, int rowIndex) {
+        try {
+            row = sh.getRow(rowIndex);
+            if (row == null) {
+                row = sh.createRow(rowIndex);
+            }
+            cell = row.getCell(columns.get(columnName));
+
+            if (cell == null) {
+                cell = row.createCell(columns.get(columnName));
+            }
+            cell.setCellValue(text);
+
+            XSSFCellStyle style = (XSSFCellStyle) wb.createCellStyle();
+            style.setFillPattern(FillPatternType.NO_FILL);
+            style.setFillBackgroundColor(IndexedColors.BRIGHT_GREEN.getIndex());//Background Color
+            style.setFillForegroundColor(IndexedColors.WHITE.getIndex());//Text Color
+            style.setAlignment(HorizontalAlignment.CENTER);
+            style.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            cell.setCellStyle(style);
+
+            fileOut = new FileOutputStream(excelFilePath);
+            wb.write(fileOut);
+            fileOut.flush();
+            fileOut.close();
+        } catch (Exception e) {
             e.getMessage();
         }
     }

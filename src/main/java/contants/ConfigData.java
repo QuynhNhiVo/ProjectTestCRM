@@ -21,4 +21,6 @@ public class ConfigData {
     public static String SCREENSHOT_PATH = PropertiesHelper.getValue("SCREENSHOT_PATH");
     public static String RECORD = PropertiesHelper.getValue("RECORD");
     public static String RECORD_PATH = PropertiesHelper.getValue("RECORD_PATH");
+
+    public static String FILE_EXCEL_CUSTOMERS = PropertiesHelper.getValue("FILE_EXCEL_CUSTOMERS");
 }

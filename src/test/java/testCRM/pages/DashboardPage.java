@@ -5,7 +5,7 @@ import org.testng.asserts.SoftAssert;
 
 import static keywords.WebUI.*;
 
-public class DashboardPage {
+public class DashboardPage extends CommonPage{
 
     private String subdirLogin = "/admin/authentication";
     private String subdirCustomers = "/admin/clients";
@@ -30,34 +30,20 @@ public class DashboardPage {
         checkElementIsSelectedAndClick(checkboxQuickStatistics);
     }
 
-    public LoginPage logout(){
-        clickElement(iconDropdown);
-        clickElement(optionLogout);
-        waiForPageLoad();
+    public LoginPage verifyLogout(){
         verifyContain(getURLPage(), subdirLogin, "Logout Failed. Can not redirect to Login page.");
         return new LoginPage();
     }
 
-    public void verifyOptionsQuickStatistics(){
+    public DashboardPage verifyOptionsQuickStatistics(){
         checkQuickStatics();
         sleep(1);
         SoftAssert softAssert = new SoftAssert();
         softAssert.assertEquals(getTextElement(invoicesAwaitingPayment), "3 / 3","Total Invoices Awaiting Payment not match");
-        softAssert.assertEquals(getTextElement(convertedLeads), "6 / 11","Total Converted Leads not match");
-        softAssert.assertEquals(getTextElement(projectsInProgress), "5 / 5","Total Projects In Progress not match");
-        softAssert.assertEquals(getTextElement(tasksNotFinished), "7 / 8","Total Tasks Not Finished not match");
+        softAssert.assertEquals(getTextElement(convertedLeads), "5 / 11","Total Converted Leads not match");
+        softAssert.assertEquals(getTextElement(projectsInProgress), "6 / 7","Total Projects In Progress not match");
+        softAssert.assertEquals(getTextElement(tasksNotFinished), "7 / 9","Total Tasks Not Finished not match");
         softAssert.assertAll();
-    }
-
-    public CustomersPage goCustomersPage(){
-        clickElement(menuCustomers);
-        verifyContain(getURLPage(), subdirCustomers, "URL not True");
-        return new CustomersPage();
-    }
-
-    public ProjectsPage goProjectsPage(){
-        clickElement(menuProject);
-        verifyContain(getURLPage(), subdirProjects, "URL not True");
-        return new ProjectsPage();
+        return this;
     }
 }

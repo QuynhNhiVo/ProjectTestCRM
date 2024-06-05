@@ -6,6 +6,7 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
@@ -13,9 +14,12 @@ import utils.LogUtils;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class WebUI {
+
+    public static JavascriptExecutor js = (JavascriptExecutor) getDriver();
 
     public static WebDriver getDriver() {
         return DriverManager.getDriver();
@@ -111,6 +115,41 @@ public class WebUI {
         getWebElement(by).clear();
         getWebElement(by).sendKeys(text);
         LogUtils.info("Clear placeholder and Set text on Element: " + by + " - Text: " + text);
+    }
+
+    @Step("Navigate to previous page")
+    public static void goToPreviousPage(){
+         getDriver().navigate().forward();
+         LogUtils.info("Navigate to previous page.");
+    }
+
+    @Step("Select with {1} option: {2} of element {0}")
+    public static void handleDropdown(By by, String type, String[] option) {
+        Select select = new Select(getWebElement(by));
+        waiForPageLoad();
+        for (int i=0;  i < option.length; i++){
+            switch (type.trim().toLowerCase()) {
+                case "text":
+                    select.selectByVisibleText(option[i]);
+                    break;
+                case "value":
+                    select.selectByValue(option[i]);
+                    break;
+                case "index":
+                    select.selectByIndex(Integer.parseInt(option[i]));
+                    break;
+                case "deselect":
+                    select.deselectAll();
+                    break;
+            }
+        }
+    }
+
+    @Step("Get first option of the element {0}")
+    public static String getFirstOptionSelected(By by){
+        Select select = new Select(getWebElement(by));
+        LogUtils.info("First option is: " + select.getFirstSelectedOption().getText());
+        return select.getFirstSelectedOption().getText();
     }
 
 
@@ -394,10 +433,11 @@ public class WebUI {
         return check;
     }
 
+    @Step("Verify the element is selected {0}")
     public static boolean checkElementIsSelected(By by){
         waitForElementVisible(by);
         if(getWebElement(by).isSelected()){
-            LogUtils.info("Element has selected: " + by);
+            LogUtils.info("The element has been selected: " + by);
             return true;
         }else {
             Assert.assertTrue(false, "Element not selected");
@@ -405,13 +445,19 @@ public class WebUI {
         }
     }
 
-    public static boolean checkElementIsSelectedAndClick(By by){
-        if(getWebElement(by).isSelected()){
+    @Step("Verify the element is selected {0}")
+    public static boolean checkElementIsSelectedAndClick(By by) {
+        if (getWebElement(by).isSelected()) {
             LogUtils.info("Element has selected: " + by);
             return true;
-        }else {
-            LogUtils.info("Element not selected");
-            clickElement(by);
+        } else {
+            LogUtils.info("Element not selected.");
+            boolean check = verifyElementClickable(by);
+            if (check) {
+                clickElement(by);
+            } else {
+                js.executeScript("arguments[0].click();", getWebElement(by));
+            }
             return false;
         }
     }
