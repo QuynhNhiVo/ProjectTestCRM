@@ -32,7 +32,6 @@ public class ExcelHelper {
             File f = new File(ExcelPath);
             if (!f.exists()) {
                 LogUtils.error("File doesn't exist.");
-                System.out.println("File doesn't exist.");
             }
             fis = new FileInputStream(ExcelPath);
             wb = WorkbookFactory.create(fis);
@@ -47,7 +46,6 @@ public class ExcelHelper {
             });
         } catch (Exception e) {
             LogUtils.error(e.getMessage());
-            System.out.println(e.getMessage());
         }
     }
 
@@ -63,7 +61,7 @@ public class ExcelHelper {
 
             int noOfRows = sh.getPhysicalNumberOfRows();
             int noOfCols = row.getLastCellNum();
-            System.out.println(noOfRows + " - " + noOfCols);
+            LogUtils.info(noOfRows + " - " + noOfCols);
 
             Cell cell;
             data = new Object[noOfRows - 1][noOfCols];
@@ -90,7 +88,7 @@ public class ExcelHelper {
                 }
             }
         } catch (Exception e) {
-            System.out.println("The exception is:" + e.getMessage());
+            LogUtils.info("The exception is:" + e.getMessage());
             throw new RuntimeException(e);
         }
         return data;
@@ -125,6 +123,11 @@ public class ExcelHelper {
     }
 
     public String getCellData(String columnName, int rowIndex) {
+        Integer columnIndex = columns.get(columnName);
+        if (columnIndex == null) {
+            LogUtils.error("Column " + columnName + " doesn't exist.");
+            return "";
+        }
         return getCellData(columns.get(columnName), rowIndex);
     }
 
@@ -201,7 +204,7 @@ public class ExcelHelper {
             row = sh.getRow(0);
             return row.getLastCellNum();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            LogUtils.info(e.getMessage());
             throw (e);
         }
     }
