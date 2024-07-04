@@ -1,8 +1,12 @@
 package testCRM.pages;
 
+import contants.ConfigData;
+import helpers.ExcelHelper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.testng.asserts.SoftAssert;
+
+import java.util.Hashtable;
 
 import static keywords.WebUI.*;
 
@@ -23,34 +27,30 @@ public class CustomersPage extends CommonPage{
     private By buttonCurrency = By.xpath("//select[@id='default_currency']/following-sibling::button");
     private By dropdownCurrency = By.xpath("//select[@id='default_currency']");
     private By inputAddress = By.xpath("//textarea[@id='address']");
+    private By inputCity = By.xpath("//input[@id='city']");
+    private By inputZip = By.xpath("//input[@id='zip']");
+    private By inputState = By.xpath("//input[@id='state']");
+    private By buttonCountry = By.xpath("//select[@id='country']/following-sibling::button");
+    private By dropdownCountry = By.xpath("//select[@id='country']");
+
     private By billingShipping = By.xpath("//a[normalize-space()='Billing & Shipping']");
     private By buttonSavenContact = By.xpath("//button[contains(.,'Save and create contact')]");
     private By buttonSave = By.xpath("//button[@class='btn btn-primary only-save customer-form-submiter']");
 
     private By inputSearch = By.xpath("//input[@class='form-control input-sm']");
     private By firstResult = By.xpath("//tbody/tr[1]/td[3]/a");
+    private By buttonView = By.xpath("//tbody//tr[1]//td[3]//a[.='View']");
 
+    private By menuTasks = By.xpath("//a[@data-group='tasks']");
+    private By createInv = By.xpath("//a[normalize-space()='New Task']");
+    private By inputSubject = By.xpath("//textarea[@id='address']");
+    private By inputHourly = By.xpath("//input[@id='city']");
 
-    private void chooseGroups(String[] groups){
-        clickElement(buttonGroup);
-        handleDropdown(dropdownGroup, "value", groups);
-    }
+    private final ExcelHelper excelHelper;
 
-    private void chooseCurrency(String[] currency){
-        clickElement(buttonCurrency);
-        handleDropdown(dropdownCurrency, "text", currency);
-    }
-
-    private void infoCustomer(String company, String vat, String phone, String web, String[] groups, String[] currency, String address){
-        setText(inputCompany, company);
-        setText(vatNumber, vat);
-        setText(inputPhone, phone);
-        setText(website, web);
-        clickElement(buttonGroup);
-        chooseGroups(groups);
-        chooseCurrency(currency);
-        setText(inputAddress, address);
-        clickElement(billingShipping);
+    public CustomersPage(){
+        this.excelHelper = new ExcelHelper();
+        excelHelper.setExcelFile(ConfigData.FILE_EXCEL_CUSTOMERS, "Customers");
     }
 
     public CustomersPage verifyCustomersPage(){
@@ -58,36 +58,77 @@ public class CustomersPage extends CommonPage{
         return new CustomersPage();
     }
 
-    public CustomersPage addNewCustomer(String company, String vat, String phone, String web, String[] groups, String[] currency, String address){
+    public CustomersPage addNewCustomer(int row){
         clickElement(newCustomer);
         sleep(2);
-        setText(inputCompany, company);
-        setText(vatNumber, vat);
-        setText(inputPhone, phone);
-        setText(website, web);
-        chooseGroups(groups);
-        chooseCurrency(currency);
-        setText(inputAddress, address);
-//        clickElement(billingShipping);
-        sleep(3);
-//        clickElement(buttonSave);
+        setText(inputCompany, excelHelper.getCellData("COMPANY", row));
+        setText(vatNumber, excelHelper.getCellData("VAT", row));
+        setText(inputPhone, excelHelper.getCellData("PHONE", row));
+        setText(website, excelHelper.getCellData("WEBSITE", row));
+        chooseDropdown(buttonGroup, dropdownGroup, "text", excelHelper.getCellData("GROUPS", row).split(", "));
+        chooseDropdown(buttonCurrency, dropdownCurrency, "text", excelHelper.getCellData("CURRENT", row).split(", "));
+        setText(inputAddress, excelHelper.getCellData("CURRENT", row));
+        setText(inputCity, excelHelper.getCellData("CITY", row));
+        setText(inputState, excelHelper.getCellData("STATE", row));
+        setText(inputZip, excelHelper.getCellData("ZIPCODE", row));
+        chooseDropdown(buttonCountry, dropdownCountry, "text", excelHelper.getCellData("COUNTRY", row).split(", "));
+        sleep(5);
+        clickElement(buttonSave);
         return this;
     }
 
-    public CustomersPage searchCustomer(String company){
-        setTextAndKey(inputSearch, company, Keys.ENTER);
-        clickElement(firstResult);
+    public CustomersPage addNewCustomer(Hashtable<String, String> data){
+        clickElement(newCustomer);
+        sleep(2);
+        setText(inputCompany, data.get("COMPANY"));
+        setText(vatNumber, data.get("VAT"));
+        setText(inputPhone, data.get("PHONE"));
+        setText(website, data.get("WEBSITE"));
+        chooseDropdown(buttonGroup, dropdownGroup, "text", data.get("GROUPS").split(", "));
+        chooseDropdown(buttonCurrency, dropdownCurrency, "text", data.get("CURRENT").split(", "));
+        setText(inputAddress, data.get("CURRENT"));
+        setText(inputCity, data.get("CITY"));
+        setText(inputState, data.get("STATE"));
+        setText(inputZip, data.get("ZIPCODE"));
+        chooseDropdown(buttonCountry, dropdownCountry, "text", data.get("COUNTRY").split(", "));
+        sleep(5);
+        clickElement(buttonSave);
         return this;
     }
-//
-//    public CustomersPage verifyDataCustomer(){
-//        SoftAssert softAssert = new SoftAssert();
-//        softAssert.assertEquals(getAttributeElement(inputCompany, "value").toLowerCase(),);
-//        softAssert.assertEquals(getAttributeElement(vatNumber, "value").toLowerCase(),;
-//        softAssert.assertEquals(getAttributeElement(inputPhone, "value").toLowerCase(),);
-//        softAssert.assertEquals(getAttributeElement(website, "value").toLowerCase(),);
-//        softAssert.assertAll();
-//
-//        return this;
-//    }
+
+    public CustomersPage verifyDataCustomer(int row){
+        clearSetText(inputSearch, excelHelper.getCellData("COMPANY", row));
+        clickElement(buttonView);
+        sleep(2);
+        softAssertContain(getAttributeElement(inputCompany, "value"), excelHelper.getCellData("COMPANY", row));
+        softAssertContain(getAttributeElement(vatNumber, "value"), excelHelper.getCellData("VAT", row));
+        softAssertContain(getAttributeElement(inputPhone, "value"), excelHelper.getCellData("PHONE", row));
+        softAssertContain(getAttributeElement(website, "value"), excelHelper.getCellData("WEBSITE", row));
+        softAssertContain(getTextElement(dropdownGroup), excelHelper.getCellData("GROUPS", row));
+        softAssertContain(getFirstOptionSelected(dropdownCurrency), excelHelper.getCellData("CURRENT", row));
+        softAssertContain(getAttributeElement(inputAddress, "value"), excelHelper.getCellData("CURRENT", row));
+        softAssertContain(getAttributeElement(inputCity, "value"), excelHelper.getCellData("CITY", row));
+        softAssertContain(getAttributeElement(inputState, "value"), excelHelper.getCellData("STATE", row));
+        softAssertContain(getAttributeElement(inputZip, "value"), excelHelper.getCellData("ZIPCODE", row));
+        softAssertContain(getFirstOptionSelected(dropdownCountry), excelHelper.getCellData("COUNTRY", row));
+        return this;
+    }
+
+    public CustomersPage verifyDataCustomer(Hashtable<String, String> data){
+        clearSetText(inputSearch, data.get("COMPANY"));
+        clickElement(buttonView);
+        sleep(2);
+        softAssertContain(getAttributeElement(inputCompany, "value"), data.get("COMPANY"));
+        softAssertContain(getAttributeElement(vatNumber, "value"), data.get("VAT"));
+        softAssertContain(getAttributeElement(inputPhone, "value"), data.get("PHONE"));
+        softAssertContain(getAttributeElement(website, "value"), data.get("WEBSITE"));
+        softAssertContain(getTextElement(dropdownGroup), data.get("GROUPS"));
+        softAssertContain(getFirstOptionSelected(dropdownCurrency), data.get("CURRENT"));
+        softAssertContain(getAttributeElement(inputAddress, "value"), data.get("CURRENT"));
+        softAssertContain(getAttributeElement(inputCity, "value"), data.get("CITY"));
+        softAssertContain(getAttributeElement(inputState, "value"), data.get("STATE"));
+        softAssertContain(getAttributeElement(inputZip, "value"), data.get("ZIPCODE"));
+        softAssertContain(getFirstOptionSelected(dropdownCountry), data.get("COUNTRY"));
+        return this;
+    }
 }

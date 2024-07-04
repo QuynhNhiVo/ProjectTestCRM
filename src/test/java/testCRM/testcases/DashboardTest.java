@@ -1,6 +1,7 @@
 package testCRM.testcases;
 
 import common.BaseTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import testCRM.pages.DashboardPage;
 import testCRM.pages.LoginPage;
@@ -8,7 +9,9 @@ import testCRM.pages.LoginPage;
 public class DashboardTest extends BaseTest {
 
     LoginPage loginPage;
-    public DashboardTest() {
+
+    @BeforeMethod
+    public void DashboardTest() {
         loginPage = new LoginPage();
     }
 

@@ -1,49 +1,35 @@
 package testCRM.testcases;
 
 import common.BaseTest;
-import contants.ConfigData;
-import helpers.ExcelHelper;
+import dataprovider.DataProviderCustomers;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import testCRM.pages.CustomersPage;
-import testCRM.pages.DashboardPage;
 import testCRM.pages.LoginPage;
+
+import java.util.Hashtable;
 
 public class CustomerTest extends BaseTest {
     LoginPage loginPage;
-    DashboardPage dashboardPage;
-    CustomersPage customersPage;
-    public CustomerTest(){
+
+    @BeforeMethod
+    public void CustomerTest(){
         loginPage = new LoginPage();
     }
 
-//    @Test
-//    public void TC_AddNewCustomer(){
-//        loginPage.loginCRM()
-//            .goToCustomerPage()
-//            .verifyCustomersPage()
-//            .addNewCustomer("COMPANY",
-//                "VAT",
-//                "PHONE",
-//                "WEBSITE",
-//                "VIP",
-//                "USD",
-//                "HCM");
-//    }
-
     @Test()
-    public void TC_AddNewCustomerExcel(){
-        ExcelHelper excelHelper = new ExcelHelper();
-        excelHelper.setExcelFile(ConfigData.FILE_EXCEL_CUSTOMERS, "Customers");
+    @Parameters({"row"})
+    public void TC_AddNewSpecifiedCustomerExcel(@Optional("1") int row){
         loginPage.loginCRM()
             .goToCustomerPage()
-            .verifyCustomersPage()
-            .addNewCustomer(
-                excelHelper.getCellData("COMPANY",2),
-                excelHelper.getCellData("VAT",2),
-                excelHelper.getCellData("PHONE",2),
-                excelHelper.getCellData("WEBSITE",2),
-                excelHelper.getCellData("GROUPS",2).split(", "),
-                excelHelper.getCellData("CURRENCY",2).split(", "),
-                excelHelper.getCellData("ADDRESS",2));
+            .addNewCustomer(row);
+    }
+
+    @Test(dataProvider = "data_add_customers", dataProviderClass = DataProviderCustomers.class)
+    public void TC_AddNewCustomersExcel(Hashtable<String, String> data){
+        loginPage.loginCRM()
+            .goToCustomerPage()
+            .addNewCustomer(data);
     }
 }
