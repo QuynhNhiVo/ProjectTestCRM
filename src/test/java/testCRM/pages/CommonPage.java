@@ -9,12 +9,15 @@ public class CommonPage {
     public DashboardPage dashboardPage;
     public CustomersPage customersPage;
     public ProjectsPage projectsPage;
+    public SalesPage salesPage;
+    public ContractsPage contractsPage;
 
     private By iconDropdown = By.xpath("//li[@class='icon header-user-profile']");
     private By optionLogout = By.xpath("//a[@href='#' and text()='Logout']");
     private By menuCustomers = By.xpath("//span[normalize-space()='Customers']");
     private By menuProject = By.xpath("//span[normalize-space()='Projects']");
-
+    private By menuSales = By.xpath("//span[contains(normalize-space(),'Sales') and @class='menu-text']");
+    private By menuContracts = By.xpath("//span[normalize-space()='Contracts']");
 
     public LoginPage logout(){
         clickElement(iconDropdown);
@@ -30,6 +33,16 @@ public class CommonPage {
     public ProjectsPage goToProjectPage(){
         clickElement(menuProject);
         return new ProjectsPage();
+    }
+
+    public SalesPage goToSalesPage(){
+        clickElement(menuSales);
+        return new SalesPage();
+    }
+
+    public ContractsPage goContractsPage(){
+        clickElement(menuContracts);
+        return new ContractsPage();
     }
 
     public LoginPage getLoginPage(){
@@ -58,5 +71,19 @@ public class CommonPage {
             projectsPage = new ProjectsPage();
         }
         return projectsPage;
+    }
+
+    public SalesPage getSalesPage(){
+        if (salesPage == null) {
+            salesPage = new SalesPage();
+        }
+        return salesPage;
+    }
+
+    public ContractsPage getContractsPage(){
+        if (contractsPage == null) {
+            contractsPage = new ContractsPage();
+        }
+        return contractsPage;
     }
 }

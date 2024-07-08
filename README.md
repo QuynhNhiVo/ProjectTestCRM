@@ -7,7 +7,6 @@ Welcome to the CRM Website Demo README. This application is designed to showcase
 
 * Add New Customer
 * Edit Customer Details
-* Add Project 
 * Add Task
 
 2. **Sales Management:**

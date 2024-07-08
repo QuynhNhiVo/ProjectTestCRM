@@ -42,9 +42,9 @@ public class CustomersPage extends CommonPage{
     private By buttonView = By.xpath("//tbody//tr[1]//td[3]//a[.='View']");
 
     private By menuTasks = By.xpath("//a[@data-group='tasks']");
-    private By createInv = By.xpath("//a[normalize-space()='New Task']");
-    private By inputSubject = By.xpath("//textarea[@id='address']");
-    private By inputHourly = By.xpath("//input[@id='city']");
+    private By createTasks = By.xpath("//a[normalize-space()='New Task']");
+    private By inputSubject = By.xpath("//input[@id='name']");
+    private By saveTasks = By.xpath("//button[normalize-space()='Save']");
 
     private final ExcelHelper excelHelper;
 
@@ -55,7 +55,19 @@ public class CustomersPage extends CommonPage{
 
     public CustomersPage verifyCustomersPage(){
         verifyContain(getURLPage(), subdirCustomers, "URL not True");
-        return new CustomersPage();
+        return this;
+    }
+
+    public CustomersPage searchCustomers(int row){
+        goToCustomerPage();
+        clearSetText(inputSearch, excelHelper.getCellData("COMPANY", row));
+        return this;
+    }
+
+    public CustomersPage searchCustomers(Hashtable<String, String> data){
+        goToCustomerPage();
+        clearSetText(inputSearch, data.get("COMPANY"));
+        return this;
     }
 
     public CustomersPage addNewCustomer(int row){
@@ -80,7 +92,7 @@ public class CustomersPage extends CommonPage{
     public CustomersPage addNewCustomer(Hashtable<String, String> data){
         clickElement(newCustomer);
         sleep(2);
-        setText(inputCompany, data.get("COMPANY"));
+        setText(inputCompany, ("COMPANY"));
         setText(vatNumber, data.get("VAT"));
         setText(inputPhone, data.get("PHONE"));
         setText(website, data.get("WEBSITE"));
@@ -97,7 +109,7 @@ public class CustomersPage extends CommonPage{
     }
 
     public CustomersPage verifyDataCustomer(int row){
-        clearSetText(inputSearch, excelHelper.getCellData("COMPANY", row));
+        searchCustomers(row);
         clickElement(buttonView);
         sleep(2);
         softAssertContain(getAttributeElement(inputCompany, "value"), excelHelper.getCellData("COMPANY", row));
@@ -115,7 +127,7 @@ public class CustomersPage extends CommonPage{
     }
 
     public CustomersPage verifyDataCustomer(Hashtable<String, String> data){
-        clearSetText(inputSearch, data.get("COMPANY"));
+        searchCustomers(data);
         clickElement(buttonView);
         sleep(2);
         softAssertContain(getAttributeElement(inputCompany, "value"), data.get("COMPANY"));
@@ -131,4 +143,25 @@ public class CustomersPage extends CommonPage{
         softAssertContain(getFirstOptionSelected(dropdownCountry), data.get("COUNTRY"));
         return this;
     }
+
+    public CustomersPage addNewTask (int row){
+        searchCustomers(row);
+        clickElement(buttonView);
+        clickElement(menuTasks);
+        clickElement(createTasks);
+        setText(inputSubject, excelHelper.getCellData("TASK", row));
+        clickElement(saveTasks);
+        return this;
+    }
+
+    public CustomersPage addNewTask (Hashtable<String, String> data){
+        searchCustomers(data);
+        clickElement(buttonView);
+        clickElement(menuTasks);
+        clickElement(createTasks);
+        setText(inputSubject, data.get("TASK"));
+        clickElement(saveTasks);
+        return this;
+    }
+
 }
