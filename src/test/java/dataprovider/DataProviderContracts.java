@@ -6,12 +6,12 @@ import helpers.SystemHelper;
 import org.testng.annotations.DataProvider;
 import utils.LogUtils;
 
-public class DataProviderCustomers {
-    @DataProvider(name="data_add_customers")
+public class DataProviderContracts {
+    @DataProvider(name="data_add_contracts")
     public Object[][] dataCustomers(){
         ExcelHelper excelHelper = new ExcelHelper();
         LogUtils.info("Get file data customer: " + SystemHelper.getCurrentDir() + ConfigData.FILE_EXCEL);
-        Object[][] data = excelHelper.getDataHashTable(SystemHelper.getCurrentDir() + ConfigData.FILE_EXCEL, "Customers", 1, 2);
+        Object[][] data = excelHelper.getDataHashTable(SystemHelper.getCurrentDir() + ConfigData.FILE_EXCEL, "Contracts", 1, 2);
         return data;
     }
 }

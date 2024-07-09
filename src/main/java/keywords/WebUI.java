@@ -23,6 +23,7 @@ import java.awt.event.KeyEvent;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 public class WebUI {
@@ -206,7 +207,7 @@ public class WebUI {
     }
 
     @Step("Exit iframe")
-    public static void exitIframe(){
+    public static void exitIframe() {
         getDriver().switchTo().parentFrame();
     }
 
@@ -218,20 +219,26 @@ public class WebUI {
         AllureManager.saveTextLog("Navigate to previous page.");
     }
 
-    public static void scrollDownMenuBar(By by) {
-        waitForElementVisible(by);
-        Actions actions = new Actions(getDriver());
-        actions.moveToElement(getWebElement(by)).sendKeys(Keys.PAGE_DOWN).build().perform();
+    public static void closeTab() {
+        sleep(1);
+        Set<String> windowHandles = getDriver().getWindowHandles();
+        for (String window : windowHandles) {
+            LogUtils.info(window + " -Title: "+ getDriver().switchTo().window(window).getTitle());
+        }
+        //Close Present Windows
+        getDriver().close();
     }
 
-    public static void scrollToElement(By by) {
-        js.executeScript("argument[0].scrollIntoView(true);", getWebElements(by));
+    public static void moveTo(By by) {
+        waitForElementVisible(by);
+        Actions actions = new Actions(getDriver());
+        actions.moveToElement(getWebElement(by)).perform();
     }
 
 
     ////HANDLE PAGE/////////////////////////////////////////////////////////////////////////
 
-    public static void sendKeysDropdown(By button, By by){
+    public static void sendKeysDropdown(By button, By by) {
         clickElement(button);
         Select select = new Select(getWebElement(by));
         waiForPageLoad();
@@ -412,7 +419,7 @@ public class WebUI {
                     select.selectByVisibleText(option[i]);
                     break;
                 case "value":
-                    String id = getDriver().findElement(By.xpath("(//label[@for='client_id']/following-sibling::select)//option[normalize-space()='" + option[i] +"']")).getAttribute("value");
+                    String id = getDriver().findElement(By.xpath("(//label[@for='client_id']/following-sibling::select)//option[normalize-space()='" + option[i] + "']")).getAttribute("value");
                     select.selectByValue(id);
                     break;
                 case "index":
@@ -430,6 +437,18 @@ public class WebUI {
 //        clickElement(button);
     }
 
+    @Step("Choose {2} in dropdown {0}")
+    public static void sendkeyDropdown(By button, By input, String[] text) {
+        clickElement(button);
+        waiForPageLoad();
+        for (int i = 0; i < text.length; i++) {
+            clearSetText(input, text[i]);
+            clickElement(By.xpath("//ul[@role='presentation']//li//a"));
+            LogUtils.info("Choose " + text[i] + " -In dropdown " + button);
+            ExtentTestManager.logMessage(Status.INFO, "Choose " + text[i] + " -In dropdown " + button);
+            AllureManager.saveTextLog("Choose " + text[i] + " -In dropdown " + button);
+        }
+    }
 
     ////VERIFY///////////////////////////////////////////////////////////////////////////////
     @Step("Verify visible of element {0}")

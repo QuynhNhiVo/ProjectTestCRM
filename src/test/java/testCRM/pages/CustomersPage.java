@@ -3,8 +3,6 @@ package testCRM.pages;
 import contants.ConfigData;
 import helpers.ExcelHelper;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.testng.asserts.SoftAssert;
 
 import java.util.Hashtable;
 
@@ -50,7 +48,7 @@ public class CustomersPage extends CommonPage{
 
     public CustomersPage(){
         this.excelHelper = new ExcelHelper();
-        excelHelper.setExcelFile(ConfigData.FILE_EXCEL_CUSTOMERS, "Customers");
+        excelHelper.setExcelFile(ConfigData.FILE_EXCEL, "Customers");
     }
 
     public CustomersPage verifyCustomersPage(){

@@ -1,7 +1,12 @@
 package testCRM.pages;
 
 import static keywords.WebUI.*;
+
+import contants.ConfigData;
+import helpers.ExcelHelper;
 import org.openqa.selenium.By;
+
+import java.util.Hashtable;
 
 public class SalesPage extends CommonPage{
     private By menuSales = By.xpath("//span[contains(normalize-space(),'Sales') and @class='menu-text']");
@@ -14,8 +19,12 @@ public class SalesPage extends CommonPage{
     private By inputSubject = By.xpath("//input[@id='subject']");
     private By buttonRelated = By.xpath("//label[@for='rel_type']/following-sibling::div//button/span");
     private By dropdownRelated = By.xpath("//select[@id='rel_type']");
-    private By inputTo = By.xpath("//input[@id='proposal_to']");
     private By inputEmail = By.xpath("//input[@id='email']");
+    private By buttonItemP = By.xpath("//a[@data-toggle='modal']");
+    private By submit = By.xpath("//button[@type='submit']");
+    private By inputDiscount = By.xpath("//input[@name='discount_percent']");
+    private By inputAdj = By.xpath("//input[@name='adjustment']");
+    private By warningForgot = By.xpath("//div[@id='items-warning']/i");
     private By save = By.xpath("//button[@type='button'][normalize-space()='Save']");
 
     private String titleInvoices = "Invoices";
@@ -29,6 +38,12 @@ public class SalesPage extends CommonPage{
     private By inputRate = By.xpath("//input[@id='rate']");
     private By saveItems = By.xpath("//button[normalize-space()='Save']");
 
+    private final ExcelHelper excelHelper;
+
+    public SalesPage() {
+        excelHelper = new ExcelHelper();
+        excelHelper.setExcelFile(ConfigData.FILE_EXCEL, "Sales");
+    }
 
     public SalesPage navaigateSubmanu(){
         clickElement(subProposals);
@@ -61,27 +76,82 @@ public class SalesPage extends CommonPage{
         return this;
     }
 
-    public SalesPage addProposals(){
+    public SalesPage addProposals(int row){
         clickElement(newProposal);
-        setText(inputSubject, );
-        chooseDropdown(buttonRelated, dropdownRelated, "text", );
-        setText(inputTo, );
-        setText(inputEmail, );
+        setText(inputSubject, excelHelper.getCellData("P_SUBJECT", row));
+        chooseDropdown(buttonRelated, dropdownRelated, "text", excelHelper.getCellData("RELATED", row).split(", "));
+        setText(inputEmail, excelHelper.getCellData("EMAIL", row));
+        clickElement(buttonItemP);
+        setText(inputDescription, excelHelper.getCellData("DESCRIPTION_I", row));
+        setText(inputRate, excelHelper.getCellData("RATE", row));
+        clickElement(submit);
+        setText(inputDiscount, excelHelper.getCellData("DISCOUNT", row));
+        setText(inputAdj, excelHelper.getCellData("ADJUSTMENT", row));
+        clickElement(save);
+        clickElement(warningForgot);
         clickElement(save);
         return this;
     }
 
-    public SalesPage addInvoices(){
+    public SalesPage addProposals(Hashtable<String, String> data){
+        clickElement(newProposal);
+        setText(inputSubject, data.get("P_SUBJECT"));
+        chooseDropdown(buttonRelated, dropdownRelated, "text", data.get("RELATED").split(", "));
+        setText(inputEmail, data.get("EMAIL"));
+        clickElement(buttonItemP);
+        setText(inputDescription, data.get("DESCRIPTION_I"));
+        setText(inputRate, data.get("RATE"));
+        clickElement(submit);
+        setText(inputDiscount, data.get("DISCOUNT"));
+        setText(inputAdj, data.get("ADJUSTMENT"));
+        clickElement(save);
+        clickElement(warningForgot);
+        clickElement(save);
+        return this;
+    }
+
+    public SalesPage addInvoices(int row){
         clickElement(newInvoices);
-        chooseDropdown(buttonCustomer, dropdownCustomer, "text", );
+        chooseDropdown(buttonCustomer, dropdownCustomer, "text", excelHelper.getCellData("CUSTOMER", row).split(", "));
+        clickElement(buttonItemP);
+        setText(inputDescription, excelHelper.getCellData("DESCRIPTION_I", row));
+        setText(inputRate, excelHelper.getCellData("RATE", row));
+        clickElement(submit);
+        setText(inputDiscount, excelHelper.getCellData("DISCOUNT", row));
+        setText(inputAdj, excelHelper.getCellData("ADJUSTMENT", row));
+        clickElement(save);
+        clickElement(warningForgot);
         clickElement(save);
         return this;
     }
 
-    public SalesPage addItems(){
+    public SalesPage addInvoices(Hashtable<String, String> data){
+        clickElement(newInvoices);
+        chooseDropdown(buttonCustomer, dropdownCustomer, "text", data.get("CUSTOMER").split(", "));
+        clickElement(buttonItemP);
+        setText(inputDescription, data.get("DESCRIPTION_I"));
+        setText(inputRate, data.get("RATE"));
+        clickElement(submit);
+        setText(inputDiscount, data.get("DISCOUNT"));
+        setText(inputAdj, data.get("ADJUSTMENT"));
+        clickElement(save);
+        clickElement(warningForgot);
+        clickElement(save);
+        return this;
+    }
+
+    public SalesPage addItems(int row){
         clickElement(newItems);
-        setText(inputDescription, );
-        setText(inputRate, );
+        setText(inputDescription, excelHelper.getCellData("DESCRIPTION_I", row));
+        setText(inputRate, excelHelper.getCellData("RATE", row));
+        clickElement(saveItems);
+        return this;
+    }
+
+    public SalesPage addItems(Hashtable<String, String> data){
+        clickElement(newItems);
+        setText(inputDescription, data.get("DESCRIPTION_I"));
+        setText(inputRate, data.get("RATE"));
         clickElement(saveItems);
         return this;
     }
